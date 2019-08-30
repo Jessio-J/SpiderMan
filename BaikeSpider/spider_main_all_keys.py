@@ -3,10 +3,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from pyquery import PyQuery as pq
 
-from BaikeSpider.parse_detail import main_of_one_person
+from BaikeSpider.parse_detail_all_keys import main_of_all_keys, write_to_file
 
 # selenium模拟网页获取渲染后的有数据页面
 # chrome_options = Options()
@@ -48,14 +46,16 @@ def get_url_list():
     print(len(entries))
     for entry in entries:
         entryurl = entry.get_attribute('href')
-        main_of_one_person(entryurl)
+        main_of_all_keys(entryurl)
+
 
 
 
 
 def main():
-    for i in range(1, 5):
+    for i in range(1, 18):
         get_entry_url((i-1)*30, i)
+    write_to_file()
 
 
 if __name__ == '__main__':

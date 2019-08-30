@@ -16,7 +16,7 @@ def get_one_page(url):
         return e
 
 
-def parse_one_page(html,url):
+def parse_one_page(html, url):
     doc = pq(html)
     items_name = list(doc('.basic-info .basicInfo-block .name').items())
     items_value = list(doc('.basic-info .basicInfo-block .value').items())
@@ -24,15 +24,17 @@ def parse_one_page(html,url):
 
     person_dict = {}
     for i in range(0, count):
-        item_name = items_name[i].text()
+        item_name_raw = items_name[i].text()
+        print(''.join(item_name_raw.split()))
+        item_name = ''.join(item_name_raw.split())
         item_value = items_value[i].text()
         if item_name == '中文名':
             person_dict['user:chineseName'] = item_value
-        elif item_name == '别    名':
+        elif item_name == '别名':
             person_dict['user:additionalName'] = item_value
-        elif item_name == '国    籍':
+        elif item_name == '国籍':
             person_dict['user:nationality'] = item_value
-        elif item_name == '民    族':
+        elif item_name == '民族':
             person_dict['user:Nation'] = item_value
         elif item_name == '出生地':
             person_dict['user:birthPlace'] = item_value
@@ -40,7 +42,7 @@ def parse_one_page(html,url):
             person_dict['user:birthDate'] = item_value
         elif item_name == '逝世日期':
             person_dict['user:deathDate'] = item_value
-        elif item_name == '职    业':
+        elif item_name == '职业':
             person_dict['user:Profession'] = item_value
         elif item_name == '毕业院校':
             person_dict['user:alumniOf'] = item_value
@@ -49,24 +51,22 @@ def parse_one_page(html,url):
         elif item_name == '主要成就':
             person_dict['user:achievement'] = item_value
         elif item_name == '所在剧团':
-            person_dict['user:aﬃliation'] = item_value
-
-
+            person_dict['user:affiliation'] = item_value
+        elif item_name == '性别':
+            person_dict['user:gender'] = item_value
 
     result_dict = {
         'url': url,
         'properties': person_dict
     }
+    print(result_dict)
     return result_dict
-
-
 
 
 def main_of_one_person(url):
     html = get_one_page(url)
-    person_dict = parse_one_page(html,url)
+    person_dict = parse_one_page(html, url)
     write_to_file(person_dict)
-
 
 
 def write_to_file(content):
@@ -75,3 +75,6 @@ def write_to_file(content):
         f.close()
 
 
+if __name__ == '__main__':
+    url = 'http://baike.baidu.com/view/361532.htm'
+    main_of_one_person(url)
