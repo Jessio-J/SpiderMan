@@ -16,11 +16,12 @@ def get_one_page(url):
         return e
 
 
-def parse_one_page(html):
+def parse_one_page(html,url):
     doc = pq(html)
     items_name = list(doc('.basic-info .basicInfo-block .name').items())
     items_value = list(doc('.basic-info .basicInfo-block .value').items())
     count = len(items_name)
+
     person_dict = {}
     for i in range(0, count):
         item_name = items_name[i].text().replace(r'\s+','')
@@ -49,14 +50,21 @@ def parse_one_page(html):
             person_dict['user:achievement'] = item_value
         elif item_name == '所在剧团':
             person_dict['user:aﬃliation'] = item_value
-    return person_dict
+
+
+
+    result_dict = {
+        'url': url,
+        'properties': person_dict
+    }
+    return result_dict
 
 
 
 
 def main_of_one_person(url):
     html = get_one_page(url)
-    person_dict = parse_one_page(html)
+    person_dict = parse_one_page(html,url)
     write_to_file(person_dict)
 
 
