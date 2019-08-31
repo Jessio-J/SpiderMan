@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from BaikeSpider.parse_detail_all_keys import main_of_all_keys, write_to_file
+from BaikeSpider.addtional.parse_detail_all_keys import main_of_all_keys, write_to_file
 
 # selenium模拟网页获取渲染后的有数据页面
 # chrome_options = Options()

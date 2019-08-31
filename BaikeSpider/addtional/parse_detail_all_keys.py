@@ -1,4 +1,5 @@
 import json
+import re
 
 import requests
 from requests.exceptions import RequestException
@@ -16,26 +17,28 @@ def get_one_page(url):
         return e
 
 
-def parse_one_page(html):
+def parse_one_page(html, url):
     doc = pq(html)
     items_name = list(doc('.basic-info .basicInfo-block .name').items())
-
+    items_value = list(doc('.basic-info .basicInfo-block .value').items())
     count = len(items_name)
 
     person_dict = {}
     for i in range(0, count):
         item_name_raw = items_name[i].text()
         item_name = ''.join(item_name_raw.split())
-        all_keys_dict[item_name]=1
+        item_value = items_value[i].text()
+        if re.search(r'职业', item_name):
+            all_keys_dict[item_value] = url
 
 
 def main_of_all_keys(url):
     html = get_one_page(url)
-    parse_one_page(html)
+    parse_one_page(html,url)
 
 
 def write_to_file():
-    with open('keys.json', 'a', encoding='utf-8') as f:
+    with open('profession.json', 'a', encoding='utf-8') as f:
         f.write(json.dumps(all_keys_dict, ensure_ascii=False) + '\n')
         f.close()
 
