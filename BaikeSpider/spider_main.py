@@ -16,6 +16,7 @@ browser = webdriver.Chrome()
 # 设置加载等待
 wait = WebDriverWait(browser, 10)
 
+
 def get_entry_url(offset, page):
     """
     获取当前页的所有词条
@@ -42,8 +43,10 @@ def get_url_list():
     获取词条对应的url
     :return:
     """
-    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,'#content-main > div.grid.p-container > div.g-row.p-main > div.g71 > div.g-row.p-entry.log-set-param > div.grid-list.grid-list-spot > ul > li:nth-child(1)')))
-    ul = browser.find_element_by_css_selector('#content-main > div.grid.p-container > div.g-row.p-main > div.g71 > div.g-row.p-entry.log-set-param > div.grid-list.grid-list-spot > ul')
+    wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR,
+                                                    '#content-main > div.grid.p-container > div.g-row.p-main > div.g71 > div.g-row.p-entry.log-set-param > div.grid-list.grid-list-spot > ul > li:nth-child(1)')))
+    ul = browser.find_element_by_css_selector(
+        '#content-main > div.grid.p-container > div.g-row.p-main > div.g71 > div.g-row.p-entry.log-set-param > div.grid-list.grid-list-spot > ul')
     entries = ul.find_elements_by_css_selector('.photo .pic-content')
     print(len(entries))
     for entry in entries:
@@ -51,11 +54,9 @@ def get_url_list():
         main_of_one_person(entryurl)
 
 
-
-
 def main():
-    for i in range(1, 5):
-        get_entry_url((i-1)*30, i)
+    for i in range(1, 18):
+        get_entry_url((i - 1) * 30, i)
 
 
 if __name__ == '__main__':

@@ -1,11 +1,19 @@
 import json
+import re
 
 import requests
 from requests.exceptions import RequestException
 from pyquery import PyQuery as pq
 
+from BaikeSpider.parser import parser_names_values
+
 
 def get_one_page(url):
+    """
+    单词条请求
+    :param url:
+    :return:
+    """
     headers = {"User-Agent": "User-Agent:Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;"}
     try:
         response = requests.get(url, headers=headers)
@@ -16,62 +24,37 @@ def get_one_page(url):
         return e
 
 
-def parse_one_page(html,url):
+def parse_one_page(html, url):
+    """
+    单词条请求返回
+    :param html:
+    :param url:
+    :return:
+    """
     doc = pq(html)
     items_name = list(doc('.basic-info .basicInfo-block .name').items())
     items_value = list(doc('.basic-info .basicInfo-block .value').items())
     count = len(items_name)
-
-    person_dict = {}
-    for i in range(0, count):
-        item_name = items_name[i].text()
-        item_value = items_value[i].text()
-        if item_name == '中文名':
-            person_dict['user:chineseName'] = item_value
-        elif item_name == '别    名':
-            person_dict['user:additionalName'] = item_value
-        elif item_name == '国    籍':
-            person_dict['user:nationality'] = item_value
-        elif item_name == '民    族':
-            person_dict['user:Nation'] = item_value
-        elif item_name == '出生地':
-            person_dict['user:birthPlace'] = item_value
-        elif item_name == '出生日期':
-            person_dict['user:birthDate'] = item_value
-        elif item_name == '逝世日期':
-            person_dict['user:deathDate'] = item_value
-        elif item_name == '职    业':
-            person_dict['user:Profession'] = item_value
-        elif item_name == '毕业院校':
-            person_dict['user:alumniOf'] = item_value
-        elif item_name == '代表作品':
-            person_dict['user:representativeWorks'] = item_value
-        elif item_name == '主要成就':
-            person_dict['user:achievement'] = item_value
-        elif item_name == '所在剧团':
-            person_dict['user:aﬃliation'] = item_value
-
-
-
-    result_dict = {
-        'url': url,
-        'properties': person_dict
-    }
-    return result_dict
-
-
+    return parser_names_values(items_name, items_value, count, url)
 
 
 def main_of_one_person(url):
+    """
+    单词条爬取主逻辑
+    :param url:
+    :return:
+    """
     html = get_one_page(url)
-    person_dict = parse_one_page(html,url)
+    person_dict = parse_one_page(html, url)
     write_to_file(person_dict)
 
 
-
 def write_to_file(content):
+    """
+    将返回的dict写文件
+    :param content:
+    :return:
+    """
     with open('result.json', 'a', encoding='utf-8') as f:
         f.write(json.dumps(content, ensure_ascii=False) + '\n')
         f.close()
-
-
