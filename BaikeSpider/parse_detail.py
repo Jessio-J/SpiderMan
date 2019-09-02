@@ -52,9 +52,10 @@ def main_of_one_person(url):
 def write_to_file(content):
     """
     将返回的dict写文件
-    :param content:
+    :param content:content不为空则写入文件
     :return:
     """
-    with open('painter.json', 'a', encoding='utf-8') as f:
-        f.write(json.dumps(content, ensure_ascii=False) + '\n')
-        f.close()
+    if content:
+        with open('painter.json', 'a', encoding='utf-8') as f:
+            f.write(json.dumps(content, ensure_ascii=False) + '\n')
+            f.close()

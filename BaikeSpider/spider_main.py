@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from pyquery import PyQuery as pq
 
+from BaikeSpider.constants import huajia
 from BaikeSpider.parse_detail import main_of_one_person
 
 # selenium模拟网页获取渲染后的有数据页面
@@ -15,17 +16,7 @@ from BaikeSpider.parse_detail import main_of_one_person
 browser = webdriver.Chrome()
 # 设置加载等待
 wait = WebDriverWait(browser, 10)
-# 1-17
-yishujia = 'http://baike.baidu.com/fenlei/%E8%89%BA%E6%9C%AF%E5%AE%B6?'
-# 1-17
-huajia = 'http://baike.baidu.com/fenlei/%E7%94%BB%E5%AE%B6?'
-# yinyuejia = 'http://baike.baidu.com/fenlei/%E9%9F%B3%E4%B9%90%E5%AE%B6'
-# 1-12
-shiren = 'http://baike.baidu.com/fenlei/%E4%BD%9C%E5%AE%B6'
 
-# zuojia = 'http://baike.baidu.com/fenlei/%E4%BD%9C%E5%AE%B6'
-# 1-11
-shufajia = 'http://baike.baidu.com/fenlei/%E4%B9%A6%E6%B3%95%E5%AE%B6'
 
 
 def get_entry_url(offset, page):
