@@ -19,7 +19,11 @@ def parser_names_values(items_name, items_value, count, url):
         item_name = ''.join(item_name_raw.split())
         item_value = items_value[i].text()
         if re.search(r"[中文|姓|本]名", item_name):
-            person_dict['user:chineseName'] = item_value
+            person_dict['user:name'] = item_value
+            if re.search(r'[0-9a-zA-Z_]', item_value):
+                person_dict['user:EnglishName'] = item_value
+            else:
+                person_dict['user:chineseName'] = item_value
         elif re.search(r"[别名|艺名|别称]", item_name):
             person_dict['user:additionalName'] = item_value
         elif item_name == '外文名':
@@ -54,7 +58,7 @@ def parser_names_values(items_name, items_value, count, url):
             # elif re.search(r"演员", item_name):
             #     person_dict['user:key'] = 'Actor'
             else:
-                person_dict['user:key'] = 'Artist'
+                person_dict['user:key'] = 'Painter'
             person_dict['user:profession'] = item_value
         elif re.search(r"毕业", item_name):
             person_dict['user:alumniOf'] = item_value
@@ -90,6 +94,8 @@ def parser_names_values(items_name, items_value, count, url):
             person_dict['user:award'] = item_value
     if len(children) > 0:
         person_dict['user:children'] = children
+    if 'user:key' not in person_dict.keys():
+        person_dict['user:key'] = 'Painter'
     # 返回结果
     result_dict = {
         'url': url,

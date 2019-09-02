@@ -15,6 +15,17 @@ from BaikeSpider.parse_detail import main_of_one_person
 browser = webdriver.Chrome()
 # 设置加载等待
 wait = WebDriverWait(browser, 10)
+# 1-17
+yishujia = 'http://baike.baidu.com/fenlei/%E8%89%BA%E6%9C%AF%E5%AE%B6?'
+# 1-17
+huajia = 'http://baike.baidu.com/fenlei/%E7%94%BB%E5%AE%B6?'
+# yinyuejia = 'http://baike.baidu.com/fenlei/%E9%9F%B3%E4%B9%90%E5%AE%B6'
+# 1-12
+shiren = 'http://baike.baidu.com/fenlei/%E4%BD%9C%E5%AE%B6'
+
+# zuojia = 'http://baike.baidu.com/fenlei/%E4%BD%9C%E5%AE%B6'
+# 1-11
+shufajia = 'http://baike.baidu.com/fenlei/%E4%B9%A6%E6%B3%95%E5%AE%B6'
 
 
 def get_entry_url(offset, page):
@@ -30,7 +41,7 @@ def get_entry_url(offset, page):
             'index': page,
             'offset': offset
         }
-        url = 'http://baike.baidu.com/fenlei/%E8%89%BA%E6%9C%AF%E5%AE%B6?' + urlencode(data)
+        url = huajia + urlencode(data)
         browser.get(url)
         get_url_list()
     except TimeoutError as e:
@@ -55,7 +66,7 @@ def get_url_list():
 
 
 def main():
-    for i in range(1, 18):
+    for i in range(1, 2):
         get_entry_url((i - 1) * 30, i)
 
 
