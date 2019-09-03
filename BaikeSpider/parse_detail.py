@@ -5,6 +5,7 @@ import requests
 from requests.exceptions import RequestException
 from pyquery import PyQuery as pq
 
+from BaikeSpider.constants import get_Info_list
 from BaikeSpider.parser import parser_names_values
 
 
@@ -21,7 +22,8 @@ def get_one_page(url):
             return response.content.decode('utf8')
         return None
     except RequestException as e:
-        return e
+        print(e)
+        get_one_page(url)
 
 
 def parse_one_page(html, url):
@@ -56,6 +58,6 @@ def write_to_file(content):
     :return:
     """
     if content:
-        with open('painter.json', 'a', encoding='utf-8') as f:
+        with open('result/'+get_Info_list()[2]+'.json', 'a', encoding='utf-8') as f:
             f.write(json.dumps(content, ensure_ascii=False) + '\n')
             f.close()

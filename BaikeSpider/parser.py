@@ -1,14 +1,8 @@
 import re
 
 # 人物属性字典
-person_dict = {
+from BaikeSpider.constants import get_Info_list
 
-}
-
-# 人物孩子实体
-children = []
-# 人物父母实体
-parent = []
 
 def parser_names_values(items_name, items_value, count, url):
     """
@@ -19,18 +13,25 @@ def parser_names_values(items_name, items_value, count, url):
     :param url:当前词条对应url
     :return:词条dict
     """
+    person_dict = {
 
+    }
+
+    # 人物孩子实体
+    children = []
+    # 人物父母实体
+    parent = []
     for i in range(0, count):
         item_name_raw = items_name[i].text()
         item_name = ''.join(item_name_raw.split())
         item_value = items_value[i].text()
-        if re.search(r"[中文|姓|本]名", item_name):
+        if re.search(r"([姓本]|中文)名", item_name):
             person_dict['user:name'] = item_value
             if re.search(r'[0-9a-zA-Z_]', item_value):
                 person_dict['user:englishName'] = item_value
             else:
                 person_dict['user:chineseName'] = item_value
-        elif re.search(r"[别名|艺名|别称]", item_name):
+        elif re.search(r"别名|艺名|别称", item_name):
             person_dict['user:additionalName'] = item_value
         elif item_name == '外文名':
             person_dict['user:englishName'] = item_value
@@ -44,31 +45,31 @@ def parser_names_values(items_name, items_value, count, url):
                 'user:name': item_value
             }
             person_dict['user:birthPlace'] = birth_place
-        elif re.search(r"[生日|出生]", item_name):
+        elif re.search(r"生日|出生", item_name):
             person_dict['user:birthDate'] = item_value
-        elif re.search(r"[逝世|去世]", item_name):
+        elif re.search(r"逝世|去世", item_name):
             person_dict['user:deathDate'] = item_value
         elif item_name == '职业':
-            if re.search(r"书法", item_value):
+            if re.search(r'书法', item_value):
                 person_dict['user:key'] = 'user:Calligrapher'
-            elif re.search(r"雕", item_value):
+            elif re.search(r'雕', item_value):
                 person_dict['user:key'] = 'user:Sculptor'
-            elif re.search(r"画", item_value):
+            elif re.search(r'画', item_value):
                 person_dict['user:key'] = 'user:Painter'
-            elif re.search(r"歌", item_value):
+            elif re.search(r'歌', item_value):
                 person_dict['user:key'] = 'user:Singer'
-            elif re.search(r"作曲", item_value):
+            elif re.search(r'作曲', item_value):
                 person_dict['user:key'] = 'user:Composer'
-            elif re.search(r"演奏", item_value):
+            elif re.search(r'演奏', item_value):
                 person_dict['user:key'] = 'user:Performer'
-            elif re.search(r"音乐", item_value):
+            elif re.search(r'音乐', item_value):
                 person_dict['user:key'] = 'user:Musician'
-            elif re.search(r"设计", item_value):
+            elif re.search(r'设计', item_value):
                 person_dict['user:key'] = 'user:Designer'
             else:
-                person_dict['user:key'] = 'user:Painter'
+                person_dict['user:key'] = 'user:' + get_Info_list()[2]
             person_dict['user:profession'] = item_value
-        elif re.search(r"毕业", item_name):
+        elif re.search(r'毕业', item_name):
             organization_dict = {
                 'user:key': 'user:Organization',
                 'user:name': item_value
@@ -82,7 +83,7 @@ def parser_names_values(items_name, items_value, count, url):
             person_dict['user:works'] = work_dict
         elif item_name == '主要成就':
             person_dict['user:achievement'] = item_value
-        elif re.search(r"[所在剧团|工作单位]", item_name):
+        elif re.search(r"所在剧团|工作单位", item_name):
             affiliation_dict = {
                 'user:key': 'user:Organization',
                 'user:name': item_value
@@ -90,13 +91,13 @@ def parser_names_values(items_name, items_value, count, url):
             person_dict['user:affiliation'] = affiliation_dict
         elif item_name == '性别':
             person_dict['user:gender'] = item_value
-        elif re.search(r"[儿子|女儿|儿女]", item_name):
+        elif re.search(r"儿子|女儿|儿女", item_name):
             child = {
                 'user:key': 'user:Person',
                 'user:name': item_value
             }
             children.append(child)
-        elif re.search(r"[现居|居住地]", item_name):
+        elif re.search(r"现居|居住地", item_name):
             address_dict = {
                 'user:key': 'user:Location',
                 'user:name': item_value
@@ -108,7 +109,7 @@ def parser_names_values(items_name, items_value, count, url):
                 'user:name': item_value
             }
             person_dict['user:spouse'] = spouse
-        elif re.search(r"[父|母]", item_name):
+        elif re.search(r"父|母", item_name):
             parent_dict = {
                 'user:key': 'user:Person',
                 'user:name': item_value
@@ -121,13 +122,13 @@ def parser_names_values(items_name, items_value, count, url):
     if len(parent) > 0:
         person_dict['user:parent'] = parent
     if 'user:key' not in person_dict.keys():
-        person_dict['user:key'] = 'Painter'
+        person_dict['user:key'] = 'user:' + get_Info_list()[2]
     # 返回结果
     result_dict = {
         'url': url,
         'properties': person_dict
     }
-    if person_dict:
+    if person_dict and len(result_dict['properties']) > 1:
         return result_dict
     else:
         return None
